@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs18.x
+    Handler: index.lambdaHandler
+    Architectures:
+    - x86_64
+    Layers:
+    - Ref: Core
+Resources:
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName:
+        Ref: Environment
+      Name: QuizApp
+      Cors:
+        AllowMethods: '''*'''
+        AllowHeaders: '''*'''
+        AllowOrigin: '''*'''
+  Core:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: nodejs
+      ContentUri: ../../layers
+  LoginUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LoginUser
+      CodeUri: LoginUser
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      Events:
+        APICall:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: get
+            RestApiId:
+              Ref: ApiGateway
+    Metadata:
+      SamResourceId: LoginUser
