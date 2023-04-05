@@ -24,7 +24,7 @@ class Account {
             return { "statusCode": 404, "body": JSON.stringify({ error: true, message: error.message }) }
         }
 
-        let { phone_nubmer, email, password } = event.body
+        let { email, password } = event.body
 
 
         try {
@@ -44,7 +44,7 @@ class Account {
             }
 
 
-            let promise = new Promise((resolve, reject) => {
+            let promise = new Promise((resolve) => {
                 cognitoIdentityServiceProvider.signUp(params, function (err, data) {
                     if (err) {
                         console.log('Error:', err);
@@ -60,9 +60,6 @@ class Account {
         } catch (error) {
             return { "statusCode": 500, "body": JSON.stringify({ error: true, message: "Invalid Body" }) }
         }
-
-        /* let res = { "statusCode": 500, "body": JSON.stringify({ error: false, message: "Success" }) }
-        return res */
     }
 }
 
