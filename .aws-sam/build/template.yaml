@@ -4,6 +4,9 @@ Parameters:
   Environment:
     Type: String
     Default: dev
+  CognitoClientID:
+    Type: String
+    Default: ''
 Globals:
   Function:
     Timeout: 10
@@ -14,6 +17,33 @@ Globals:
     Layers:
     - Ref: Core
 Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName:
+        Fn::Sub: QuizApp-${Environment}
+      UsernameAttributes:
+      - email
+      - phone_number
+      Schema:
+      - Name: email
+        Required: true
+        Mutable: true
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+  UserPoolTokenClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId:
+        Ref: UserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+      - USER_PASSWORD_AUTH
   ApiGateway:
     Type: AWS::Serverless::Api
     Properties:
@@ -35,13 +65,18 @@ Resources:
       FunctionName: LoginUser
       CodeUri: LoginUser
       Policies:
+      - AmazonCognitoPowerUser
       - AWSLambdaBasicExecutionRole
+      Environment:
+        Variables:
+          CognitoClientID:
+            Ref: CognitoClientID
       Events:
         APICall:
           Type: Api
           Properties:
             Path: /login
-            Method: get
+            Method: post
             RestApiId:
               Ref: ApiGateway
     Metadata:

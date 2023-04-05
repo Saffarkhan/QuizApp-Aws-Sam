@@ -3,9 +3,9 @@ version = 0.1
 stack_name = "Quiz-App"
 resolve_s3 = true
 s3_prefix = "Quiz-App"
-region = "us-east-2"
+region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = false
-parameter_overrides = "Environment=\"dev\""
+parameter_overrides = "Environment=\"dev\" CognitoClientID=\"62pq81aobaof46nmmqra6d6t59\""
 image_repositories = []

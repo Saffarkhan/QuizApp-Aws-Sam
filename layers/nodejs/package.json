@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1345.0"
+    "aws-sdk": "^2.1345.0",
+    "bcryptjs": "^2.4.3",
+    "joi": "^17.9.1",
+    "mongoose": "^7.0.3"
   }
 }
